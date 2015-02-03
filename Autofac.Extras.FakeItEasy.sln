@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.FakeItEasy", "src\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj", "{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.Tests.FakeItEasy", "test\Autofac.Extras.Tests.FakeItEasy\Autofac.Extras.Tests.FakeItEasy.csproj", "{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
