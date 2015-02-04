@@ -2,10 +2,12 @@ using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyTitle("Autofac.Extras.FakeItEasy")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
+[assembly: AllowPartiallyTrustedCallers]
 
 [assembly: AssemblyCompany("Autofac Project - http://autofac.org")]
 [assembly: AssemblyProduct("Autofac")]
