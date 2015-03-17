@@ -14,7 +14,7 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.3.1,4.0.0)" />
-      <dependency id="FakeItEasy" version="1.18.0" />
+      <dependency id="FakeItEasy" version="[1.18.0,2.0.0)" />
     </dependencies>
   </metadata>
 </package>
