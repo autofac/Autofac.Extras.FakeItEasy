@@ -77,7 +77,7 @@ namespace Autofac.Extras.Tests.FakeItEasy
         public void CanResolveFakesWhichInvokeActionsWhenResolved()
         {
             object resolvedFake = null;
-            using (var fake = new AutoFake(onFakeCreated: obj => resolvedFake = obj))
+            using (var fake = new AutoFake(configureFake: obj => resolvedFake = obj))
             {
                 var bar = fake.Resolve<IBar>();
                 Assert.AreSame(bar, resolvedFake);
