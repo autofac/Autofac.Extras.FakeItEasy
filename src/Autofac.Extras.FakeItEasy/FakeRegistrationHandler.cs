@@ -137,7 +137,7 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         [SecuritySafeCritical]
-        private void ApplyOptions<T>(IFakeOptionsBuilder<T> options)
+        private void ApplyOptions<T>(IFakeOptions<T> options)
         {
             if (this._strict)
             {
