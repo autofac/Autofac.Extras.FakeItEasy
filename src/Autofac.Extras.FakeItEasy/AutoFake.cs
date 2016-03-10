@@ -55,12 +55,12 @@ namespace Autofac.Extras.FakeItEasy
         /// <see langword="true" /> to configure fake calls to do nothing when called.
         /// </param>
         /// <param name="builder">The container builder to use to build the container.</param>
-        /// <param name="onFakeCreated">Specifies an action that should be run over a fake object once it's created.</param>
+        /// <param name="configureFake">Specifies an action that should be run over a fake object before it's created.</param>
         public AutoFake(
             bool strict = false,
             bool callsBaseMethods = false,
             bool callsDoNothing = false,
-            Action<object> onFakeCreated = null,
+            Action<object> configureFake = null,
             ContainerBuilder builder = null)
         {
             if (builder == null)
@@ -69,7 +69,7 @@ namespace Autofac.Extras.FakeItEasy
             }
 
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
-            builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, callsDoNothing, onFakeCreated));
+            builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, callsDoNothing, configureFake));
             this._container = builder.Build();
             this._container.BeginLifetimeScope();
         }

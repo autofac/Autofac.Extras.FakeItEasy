@@ -43,7 +43,7 @@ namespace Autofac.Extras.FakeItEasy
         private readonly bool _strict;
         private readonly bool _callsBaseMethods;
         private readonly bool _callsDoNothing;
-        private readonly Action<object> _onFakeCreated;
+        private readonly Action<object> _configureFake;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FakeRegistrationHandler" /> class.
@@ -51,14 +51,14 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="strict">Whether fakes should be created with strict semantics.</param>
         /// <param name="callsBaseMethods">Whether fakes should call base methods.</param>
         /// <param name="callsDoNothing">Whether calls to fakes should do nothing.</param>
-        /// <param name="onFakeCreated">An action to perform on a fake when it is created.</param>
+        /// <param name="configureFake">An action to perform on a fake before it's created.</param>
         [SecurityCritical]
-        public FakeRegistrationHandler(bool strict, bool callsBaseMethods, bool callsDoNothing, Action<object> onFakeCreated)
+        public FakeRegistrationHandler(bool strict, bool callsBaseMethods, bool callsDoNothing, Action<object> configureFake)
         {
             this._strict = strict;
             this._callsBaseMethods = callsBaseMethods;
             this._callsDoNothing = callsDoNothing;
-            this._onFakeCreated = onFakeCreated;
+            this._configureFake = configureFake;
 
             // NOTE (adamralph): inspired by http://blog.functionalfun.net/2009/10/getting-methodinfo-of-generic-method.html
             Expression<Action> create = () => this.CreateFake<object>();
@@ -137,16 +137,16 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         [SecuritySafeCritical]
-        private void ApplyOptions<T>(IFakeOptionsBuilder<T> options)
+        private void ApplyOptions<T>(IFakeOptions<T> options)
         {
             if (this._strict)
             {
                 options.Strict();
             }
 
-            if (this._onFakeCreated != null)
+            if (this._configureFake != null)
             {
-                options.OnFakeCreated(x => this._onFakeCreated(x));
+                options.ConfigureFake(x => this._configureFake(x));
             }
         }
     }
