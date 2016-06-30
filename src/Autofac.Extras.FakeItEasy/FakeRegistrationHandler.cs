@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security;
 using Autofac.Builder;
 using Autofac.Core;
 using FakeItEasy;
@@ -52,7 +51,6 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="callsBaseMethods">Whether fakes should call base methods.</param>
         /// <param name="callsDoNothing">Whether calls to fakes should do nothing.</param>
         /// <param name="configureFake">An action to perform on a fake before it's created.</param>
-        [SecurityCritical]
         public FakeRegistrationHandler(bool strict, bool callsBaseMethods, bool callsDoNothing, Action<object> configureFake)
         {
             this._strict = strict;
@@ -81,7 +79,6 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="service">The service that was requested.</param>
         /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
         /// <returns>Registrations providing the service.</returns>
-        [SecuritySafeCritical]
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -112,13 +109,11 @@ namespace Autofac.Extras.FakeItEasy
         /// </summary>
         /// <param name="typedService">The typed service.</param>
         /// <returns>A fake object.</returns>
-        [SecuritySafeCritical]
         private object CreateFake(TypedService typedService)
         {
             return this._createMethod.MakeGenericMethod(new[] { typedService.ServiceType }).Invoke(this, null);
         }
 
-        [SecuritySafeCritical]
         private T CreateFake<T>()
         {
             var fake = A.Fake<T>(this.ApplyOptions);
@@ -136,7 +131,6 @@ namespace Autofac.Extras.FakeItEasy
             return fake;
         }
 
-        [SecuritySafeCritical]
         private void ApplyOptions<T>(IFakeOptions<T> options)
         {
             if (this._strict)
