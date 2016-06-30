@@ -18,4 +18,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyInformationalVersion("0.0.0")]
 [assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCopyright("Copyright © 2014 Autofac Contributors")]
-[assembly: AssemblyDescription("FakeItEasy auto mocking integration for Autofac IoC")]
+[assembly: AssemblyDescription("FakeItEasy auto mocking integration for Autofac IoC.")]
