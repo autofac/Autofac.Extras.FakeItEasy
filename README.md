@@ -6,6 +6,6 @@ FakeItEasy auto mocking integration for [Autofac](http://autofac.org).
 
 Please file issues and pull requests for this package in this repository rather than in the Autofac core repo.
 
-- [Documentation](http://autofac.readthedocs.org/en/latest/integration/fakeiteasy.html)
+- [Documentation](http://autofac.readthedocs.io/en/latest/integration/fakeiteasy.html)
 - [NuGet](https://www.nuget.org/packages/Autofac.Extras.FakeItEasy)
-- [Contributing](http://autofac.readthedocs.org/en/latest/contributors.html)
+- [Contributing](http://autofac.readthedocs.io/en/latest/contributors.html)
