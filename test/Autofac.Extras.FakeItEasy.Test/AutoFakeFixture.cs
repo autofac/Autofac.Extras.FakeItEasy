@@ -90,17 +90,6 @@ namespace Autofac.Extras.FakeItEasy.Test
         }
 
         [Fact]
-        public void CanResolveFakesWhichDoNotRespondToCalls()
-        {
-            using (var fake = new AutoFake(callsDoNothing: true))
-            {
-                var bar = fake.Resolve<IBar>();
-                var result = bar.Spawn();
-                Assert.Null(result);
-            }
-        }
-
-        [Fact]
         public void CanResolveFakesWhichInvokeActionsWhenResolved()
         {
             var resolvedFake = (object)null;
