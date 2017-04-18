@@ -145,9 +145,8 @@ function Invoke-DotNetPack
     $PackagesPath,
 
     [Parameter(Mandatory=$True, ValueFromPipeline=$False)]
-    [ValidateNotNull()]
     [string]
-    $VersionSuffix
+    $VersionSuffix = ""
   )
   Begin
   {
