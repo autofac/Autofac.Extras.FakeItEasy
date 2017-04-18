@@ -41,7 +41,6 @@ namespace Autofac.Extras.FakeItEasy
         private readonly MethodInfo _createMethod;
         private readonly bool _strict;
         private readonly bool _callsBaseMethods;
-        private readonly bool _callsDoNothing;
         private readonly Action<object> _configureFake;
 
         /// <summary>
@@ -49,13 +48,11 @@ namespace Autofac.Extras.FakeItEasy
         /// </summary>
         /// <param name="strict">Whether fakes should be created with strict semantics.</param>
         /// <param name="callsBaseMethods">Whether fakes should call base methods.</param>
-        /// <param name="callsDoNothing">Whether calls to fakes should do nothing.</param>
         /// <param name="configureFake">An action to perform on a fake before it's created.</param>
-        public FakeRegistrationHandler(bool strict, bool callsBaseMethods, bool callsDoNothing, Action<object> configureFake)
+        public FakeRegistrationHandler(bool strict, bool callsBaseMethods, Action<object> configureFake)
         {
             this._strict = strict;
             this._callsBaseMethods = callsBaseMethods;
-            this._callsDoNothing = callsDoNothing;
             this._configureFake = configureFake;
 
             // NOTE (adamralph): inspired by http://blog.functionalfun.net/2009/10/getting-methodinfo-of-generic-method.html
@@ -121,11 +118,6 @@ namespace Autofac.Extras.FakeItEasy
             if (this._callsBaseMethods)
             {
                 A.CallTo(fake).CallsBaseMethod();
-            }
-
-            if (this._callsDoNothing)
-            {
-                A.CallTo(fake).DoesNothing();
             }
 
             return fake;
