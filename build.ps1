@@ -27,7 +27,7 @@ $branch = @{ $true = $env:APPVEYOR_REPO_BRANCH; $false = $(git symbolic-ref --sh
 $revision = @{ $true = "{0:00000}" -f [convert]::ToInt32("0" + $env:APPVEYOR_BUILD_NUMBER, 10); $false = "local" }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 $versionSuffix = @{ $true = ""; $false = "$($branch.Substring(0, [math]::Min(10,$branch.Length)))-$revision"}[$branch -eq "master" -and $revision -ne "local"]
 
-Write-Message "Package version suffix is $versionSuffix"
+Write-Message "Package version suffix is '$versionSuffix'"
 
 # Package restore
 Write-Message "Restoring packages"
@@ -35,7 +35,7 @@ Get-DotNetProjectDirectory -RootPath $PSScriptRoot | Restore-DependencyPackages
 
 # Build/package
 Write-Message "Building projects and packages"
-Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -PackagesPath $packagesPath -VersionSuffix $versionSuffix
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -PackagesPath $packagesPath -VersionSuffix "$versionSuffix"
 
 # Test
 Write-Message "Executing unit tests"
