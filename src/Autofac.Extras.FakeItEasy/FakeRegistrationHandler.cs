@@ -61,7 +61,7 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         /// <summary>
-        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
         public bool IsAdapterForIndividualComponents
@@ -86,8 +86,8 @@ namespace Autofac.Extras.FakeItEasy
 
             var typedService = service as TypedService;
             if (typedService == null ||
-                (!typedService.ServiceType.IsInterface && !typedService.ServiceType.IsAbstract) ||
-                (typedService.ServiceType.IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
+                (!typedService.ServiceType.GetTypeInfo().IsInterface && !typedService.ServiceType.GetTypeInfo().IsAbstract) ||
+                (typedService.ServiceType.GetTypeInfo().IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
                 typedService.ServiceType.IsArray ||
                 typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
             {

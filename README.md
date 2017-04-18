@@ -1,4 +1,4 @@
-#Autofac.Extras.FakeItEasy
+# Autofac.Extras.FakeItEasy
 
 FakeItEasy auto mocking integration for [Autofac](http://autofac.org).
 
