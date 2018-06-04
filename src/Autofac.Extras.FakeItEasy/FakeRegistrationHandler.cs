@@ -76,7 +76,7 @@ namespace Autofac.Extras.FakeItEasy
         {
             if (service == null)
             {
-                throw new ArgumentNullException("service");
+                throw new ArgumentNullException(nameof(service));
             }
 
             var typedService = service as TypedService;
