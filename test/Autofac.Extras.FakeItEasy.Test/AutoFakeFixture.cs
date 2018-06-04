@@ -90,6 +90,16 @@ namespace Autofac.Extras.FakeItEasy.Test
         }
 
         [Fact]
+        public void CanResolveFakesWhichCallsBaseMethodsAndInvokeAbstractMethod()
+        {
+            using (var fake = new AutoFake(callsBaseMethods: true))
+            {
+                var bar = fake.Resolve<Bar>();
+                bar.GoAbstractly();
+            }
+        }
+
+        [Fact]
         public void CanResolveFakesWhichInvokeActionsWhenResolved()
         {
             var resolvedFake = (object)null;
@@ -198,6 +208,8 @@ namespace Autofac.Extras.FakeItEasy.Test
             {
                 throw new NotImplementedException();
             }
+
+            public abstract void GoAbstractly();
         }
 
         public class Baz : IBaz

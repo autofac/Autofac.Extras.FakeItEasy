@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2007 - 2018 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -103,26 +103,24 @@ namespace Autofac.Extras.FakeItEasy
         /// <returns>A fake object.</returns>
         private object CreateFake(TypedService typedService)
         {
-            var fake = Create.Fake(typedService.ServiceType, this.ApplyOptions);
-
-            if (this._callsBaseMethods)
-            {
-                A.CallTo(fake).CallsBaseMethod();
-            }
-
-            return fake;
+            return Create.Fake(typedService.ServiceType, this.ApplyOptions);
         }
 
         private void ApplyOptions(IFakeOptions options)
         {
             if (this._strict)
             {
-                options.Strict();
+                options = options.Strict();
             }
 
             if (this._configureFake != null)
             {
-                options.ConfigureFake(x => this._configureFake(x));
+                options = options.ConfigureFake(x => this._configureFake(x));
+            }
+
+            if (this._callsBaseMethods)
+            {
+                options.CallsBaseMethods();
             }
         }
     }
