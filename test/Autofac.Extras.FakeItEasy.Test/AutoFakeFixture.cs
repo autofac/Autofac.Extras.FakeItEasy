@@ -137,6 +137,49 @@ namespace Autofac.Extras.FakeItEasy.Test
             }
         }
 
+        [Fact]
+        public void CallsBaseMethodsOverridesStrict()
+        {
+            // A characterization test, intended to detect accidental changes in behavior.
+            // This is an odd situation, since specifying both strict and callsBaseMethods only makes
+            // sense when there are concrete methods on the fake that we want to be executed, but we
+            // want to reject the invocation of any methods that are left abstract on the faked type.
+            using (var fake = new AutoFake(callsBaseMethods: true, strict: true))
+            {
+                var bar = fake.Resolve<Bar>();
+                bar.Go();
+                Assert.True(bar.Gone);
+            }
+        }
+
+        [Fact]
+        public void CallsBaseMethodsOverridesConfigureFake()
+        {
+            // A characterization test, intended to detect accidental changes in behavior.
+            // Since callsBaseMethods applies globally and configureFake can affect individual
+            // members, having configureFake override callsBaseMethods may be preferred.
+            using (var fake = new AutoFake(
+                callsBaseMethods: true,
+                configureFake: f => A.CallTo(() => ((Bar)f).Go()).DoesNothing()))
+            {
+                var bar = fake.Resolve<Bar>();
+                bar.Go();
+                Assert.True(bar.Gone);
+            }
+        }
+
+        [Fact]
+        public void ConfigureFakeOverridesStrict()
+        {
+            using (var fake = new AutoFake(
+                strict: true,
+                configureFake: f => A.CallTo(() => ((Bar)f).Go()).DoesNothing()))
+            {
+                var bar = fake.Resolve<Bar>();
+                bar.Go();
+            }
+        }
+
         public abstract class Bar : IBar
         {
             private bool _gone;
