@@ -26,19 +26,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 using FakeItEasy;
 using FakeItEasy.Creation;
+using FakeItEasy.Sdk;
 
 namespace Autofac.Extras.FakeItEasy
 {
     /// <summary> Resolves unknown interfaces and Fakes. </summary>
     internal class FakeRegistrationHandler : IRegistrationSource
     {
-        private readonly MethodInfo _createMethod;
         private readonly bool _strict;
         private readonly bool _callsBaseMethods;
         private readonly Action<object> _configureFake;
@@ -54,10 +53,6 @@ namespace Autofac.Extras.FakeItEasy
             this._strict = strict;
             this._callsBaseMethods = callsBaseMethods;
             this._configureFake = configureFake;
-
-            // NOTE (adamralph): inspired by http://blog.functionalfun.net/2009/10/getting-methodinfo-of-generic-method.html
-            Expression<Action> create = () => this.CreateFake<object>();
-            this._createMethod = (create.Body as MethodCallExpression).Method.GetGenericMethodDefinition();
         }
 
         /// <summary>
@@ -108,12 +103,7 @@ namespace Autofac.Extras.FakeItEasy
         /// <returns>A fake object.</returns>
         private object CreateFake(TypedService typedService)
         {
-            return this._createMethod.MakeGenericMethod(new[] { typedService.ServiceType }).Invoke(this, null);
-        }
-
-        private T CreateFake<T>()
-        {
-            var fake = A.Fake<T>(this.ApplyOptions);
+            var fake = Create.Fake(typedService.ServiceType, this.ApplyOptions);
 
             if (this._callsBaseMethods)
             {
@@ -123,7 +113,7 @@ namespace Autofac.Extras.FakeItEasy
             return fake;
         }
 
-        private void ApplyOptions<T>(IFakeOptions<T> options)
+        private void ApplyOptions(IFakeOptions options)
         {
             if (this._strict)
             {
