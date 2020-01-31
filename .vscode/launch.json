@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "args": [
+      ],
+      "console": "internalConsole",
+      "cwd": "${workspaceFolder}/test/Autofac.Configuration.Test",
+      "name": ".NET Core Launch (console)",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/test/Autofac.Extras.FakeItEasy.Test/bin/Debug/netcoreapp3.0/Autofac.Extras.FakeItEasy.Test.dll",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "coreclr"
+    },
+    {
+      "name": ".NET Core Attach",
+      "processId": "${command:pickProcess}",
+      "request": "attach",
+      "type": "coreclr"
+    }
+  ],
+  "version": "0.2.0"
+}
