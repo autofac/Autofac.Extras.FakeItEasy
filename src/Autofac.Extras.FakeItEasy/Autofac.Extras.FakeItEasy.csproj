@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="5.0.0" />
-    <PackageReference Include="FakeItEasy" Version="6.0.0" />
+    <PackageReference Include="FakeItEasy" Version="3.4.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.8">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
@@ -47,5 +47,6 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
   </ItemGroup>
 </Project>
