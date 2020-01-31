@@ -59,10 +59,7 @@ namespace Autofac.Extras.FakeItEasy
         /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
+        public bool IsAdapterForIndividualComponents => false;
 
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used

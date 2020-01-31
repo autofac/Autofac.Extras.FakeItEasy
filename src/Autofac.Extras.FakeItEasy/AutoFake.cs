@@ -24,22 +24,26 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 
 namespace Autofac.Extras.FakeItEasy
 {
     /// <summary>
-    /// Wrapper around <see cref="Autofac"/> and <see cref="FakeItEasy"/>
+    /// Wrapper around <see cref="Autofac"/> and <see cref="FakeItEasy"/>.
     /// </summary>
     [SecurityCritical]
     public class AutoFake : IDisposable
     {
-        private readonly IContainer _container;
         private bool _disposed;
+
+        private readonly Stack<ILifetimeScope> _scopes = new Stack<ILifetimeScope>();
+
+        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "It's only a reference, dispose is called from the _scopes Stack")]
+        private ILifetimeScope _currentScope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoFake" /> class.
@@ -53,11 +57,13 @@ namespace Autofac.Extras.FakeItEasy
         /// </param>
         /// <param name="builder">The container builder to use to build the container.</param>
         /// <param name="configureFake">Specifies an action that should be run over a fake object before it's created.</param>
+        /// <param name="configureAction">Specifies actions that needs to be performed on the container builder, like registering additional services.</param>
         public AutoFake(
             bool strict = false,
             bool callsBaseMethods = false,
             Action<object> configureFake = null,
-            ContainerBuilder builder = null)
+            ContainerBuilder builder = null,
+            Action<ContainerBuilder> configureAction = null)
         {
             if (builder == null)
             {
@@ -66,8 +72,9 @@ namespace Autofac.Extras.FakeItEasy
 
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
             builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, configureFake));
-            this._container = builder.Build();
-            this._container.BeginLifetimeScope();
+            configureAction?.Invoke(builder);
+            this.Container = builder.Build();
+            this._currentScope = this.Container.BeginLifetimeScope();
         }
 
         /// <summary>
@@ -82,10 +89,7 @@ namespace Autofac.Extras.FakeItEasy
         /// <summary>
         /// Gets the <see cref="IContainer"/> that handles the component resolution.
         /// </summary>
-        public IContainer Container
-        {
-            get { return this._container; }
-        }
+        public IContainer Container { get; }
 
         /// <summary>
         /// Disposes internal container.
@@ -98,21 +102,21 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         /// <summary>
-        /// Resolve the specified type in the container (register it if needed)
+        /// Resolve the specified type in the container (register it if needed).
         /// </summary>
         /// <typeparam name="T">The type of the service.</typeparam>
-        /// <param name="parameters">Optional parameters</param>
+        /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
         public T Resolve<T>(params Parameter[] parameters)
         {
-            return this.Container.Resolve<T>(parameters);
+            return this._currentScope.Resolve<T>(parameters);
         }
 
         /// <summary>
-        /// Resolve the specified type in the container (register it if needed)
+        /// Resolve the specified type in the container (register it if needed).
         /// </summary>
         /// <typeparam name="T">The type of the service.</typeparam>
-        /// <param name="parameters">Optional parameters</param>
+        /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
         [Obsolete("Use Resolve<T>() instead")]
         public T Create<T>(params Parameter[] parameters)
@@ -121,23 +125,28 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         /// <summary>
-        /// Resolve the specified type in the container (register it if needed)
+        /// Resolve the specified type in the container (register it if needed).
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
-        /// <param name="parameters">Optional parameters</param>
+        /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
         public TService Provide<TService, TImplementation>(params Parameter[] parameters)
         {
-            this.Container.ComponentRegistry.Register(
-                RegistrationBuilder.ForType<TImplementation>().As<TService>().InstancePerLifetimeScope().CreateRegistration());
+            var scope = this._currentScope.BeginLifetimeScope(b =>
+            {
+                b.RegisterType<TImplementation>().As<TService>().InstancePerLifetimeScope();
+            });
 
-            return this.Container.Resolve<TService>(parameters);
+            this._scopes.Push(scope);
+            this._currentScope = scope;
+
+            return this._currentScope.Resolve<TService>(parameters);
         }
 
         /// <summary>
-        /// Resolve the specified type in the container (register specified instance if needed)
+        /// Resolve the specified type in the container (register specified instance if needed).
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="instance">The instance to register if needed.</param>
@@ -146,10 +155,15 @@ namespace Autofac.Extras.FakeItEasy
         public TService Provide<TService>(TService instance)
             where TService : class
         {
-            this.Container.ComponentRegistry.Register(
-                RegistrationBuilder.ForDelegate((c, p) => instance).InstancePerLifetimeScope().CreateRegistration());
+            var scope = this._currentScope.BeginLifetimeScope(b =>
+            {
+                b.Register(c => instance).InstancePerLifetimeScope();
+            });
 
-            return this.Container.Resolve<TService>();
+            this._scopes.Push(scope);
+            this._currentScope = scope;
+
+            return this._currentScope.Resolve<TService>();
         }
 
         /// <summary>
@@ -167,6 +181,9 @@ namespace Autofac.Extras.FakeItEasy
             {
                 if (disposing)
                 {
+                    while (this._scopes.Count > 0)
+                        this._scopes.Pop().Dispose();
+
                     this.Container.Dispose();
                 }
 
