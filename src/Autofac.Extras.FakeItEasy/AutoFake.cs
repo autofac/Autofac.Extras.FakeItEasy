@@ -1,27 +1,5 @@
-// This software is part of the Autofac IoC container
-// Copyright (c) 2013 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -65,10 +43,7 @@ namespace Autofac.Extras.FakeItEasy
             ContainerBuilder builder = null,
             Action<ContainerBuilder> configureAction = null)
         {
-            if (builder == null)
-            {
-                builder = new ContainerBuilder();
-            }
+            builder ??= new ContainerBuilder();
 
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
             builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, configureFake));
@@ -81,10 +56,7 @@ namespace Autofac.Extras.FakeItEasy
         /// Finalizes an instance of the <see cref="AutoFake"/> class.
         /// </summary>
         [SecuritySafeCritical]
-        ~AutoFake()
-        {
-            this.Dispose(false);
-        }
+        ~AutoFake() => this.Dispose(false);
 
         /// <summary>
         /// Gets the <see cref="IContainer"/> that handles the component resolution.
@@ -107,10 +79,7 @@ namespace Autofac.Extras.FakeItEasy
         /// <typeparam name="T">The type of the service.</typeparam>
         /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
-        public T Resolve<T>(params Parameter[] parameters)
-        {
-            return this._currentScope.Resolve<T>(parameters);
-        }
+        public T Resolve<T>(params Parameter[] parameters) => this._currentScope.Resolve<T>(parameters);
 
         /// <summary>
         /// Resolve the specified type in the container (register it if needed).
@@ -119,10 +88,7 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
         [Obsolete("Use Resolve<T>() instead")]
-        public T Create<T>(params Parameter[] parameters)
-        {
-            return this.Resolve<T>(parameters);
-        }
+        public T Create<T>(params Parameter[] parameters) => this.Resolve<T>(parameters);
 
         /// <summary>
         /// Resolve the specified type in the container (register it if needed).
@@ -171,7 +137,7 @@ namespace Autofac.Extras.FakeItEasy
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to dispose of managed resources (during a manual execution
-        /// of <see cref="Autofac.Extras.FakeItEasy.AutoFake.Dispose()"/>); or
+        /// of <see cref="AutoFake.Dispose()"/>); or
         /// <see langword="false" /> if this is getting run as part of finalization where
         /// managed resources may have already been cleaned up.
         /// </param>
