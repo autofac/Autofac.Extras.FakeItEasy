@@ -1,11 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.FakeItEasy", "src\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj", "{2BFDBAB2-E2DA-4588-AE2D-133896FF8861}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.FakeItEasy.Test", "test\Autofac.Extras.FakeItEasy.Test\Autofac.Extras.FakeItEasy.Test.csproj", "{F8482A7A-CAA1-4D8B-BD67-1BB5FBD3A938}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74888E5E-1E1D-4CC5-A73B-8334CEB560D3}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +31,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6074B206-D425-4B05-AAAD-51E40C09BAED}
 	EndGlobalSection
 EndGlobal
