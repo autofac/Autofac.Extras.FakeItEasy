@@ -2,7 +2,7 @@
 
 FakeItEasy auto mocking integration for [Autofac](https://autofac.org).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/faeqq1sg0r0j5vfp?svg=true)](https://ci.appveyor.com/project/Autofac/autofac-extras-fakeiteasy)
+[![Build status](https://ci.appveyor.com/api/projects/status/faeqq1sg0r0j5vfp?svg=true)](https://ci.appveyor.com/project/Autofac/autofac-extras-fakeiteasy) [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/autofac/Autofac.Extras.FakeItEasy)
 
 Please file issues and pull requests for this package in this repository rather than in the Autofac core repo.
 
