@@ -193,6 +193,19 @@ namespace Autofac.Extras.FakeItEasy.Test
             }
         }
 
+        [Fact]
+        public void ReturnsInstanceFromChildScope()
+        {
+            using (var fake = new AutoFake())
+            {
+                var bar = fake.Resolve<IBar>();
+                fake.Provide(new Baz());
+                var bar2 = fake.Resolve<IBar>();
+
+                Assert.Equal(bar, bar2);
+            }
+        }
+
         public abstract class Bar : IBar
         {
             private bool _gone;

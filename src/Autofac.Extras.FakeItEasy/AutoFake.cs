@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
@@ -50,6 +51,7 @@ namespace Autofac.Extras.FakeItEasy
             configureAction?.Invoke(builder);
             this.Container = builder.Build();
             this._currentScope = this.Container.BeginLifetimeScope();
+            this._scopes.Push(this._currentScope);
         }
 
         /// <summary>
@@ -79,7 +81,16 @@ namespace Autofac.Extras.FakeItEasy
         /// <typeparam name="T">The type of the service.</typeparam>
         /// <param name="parameters">Optional parameters.</param>
         /// <returns>The service.</returns>
-        public T Resolve<T>(params Parameter[] parameters) => this._currentScope.Resolve<T>(parameters);
+        public T Resolve<T>(params Parameter[] parameters)
+        {
+            T instance = default(T);
+            if (parameters.Length == 0)
+            {
+                instance = this.InstanceFromCurrentOrParentScopes<T>();
+            }
+
+            return instance ?? this._currentScope.Resolve<T>(parameters);
+        }
 
         /// <summary>
         /// Resolve the specified type in the container (register it if needed).
@@ -130,6 +141,30 @@ namespace Autofac.Extras.FakeItEasy
             this._currentScope = scope;
 
             return this._currentScope.Resolve<TService>();
+        }
+
+        /// <summary>
+        /// Gets the type instance in the current scope or in its parents.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <returns>The resolved instance. It can return default value if none is found.</returns>
+        private TService InstanceFromCurrentOrParentScopes<TService>()
+        {
+            foreach (var scope in this._scopes)
+            {
+                var isServiceRegistered = scope.ComponentRegistry.Registrations
+                    .SelectMany(cr => cr.Services
+                        .Where(s => s.GetType() == typeof(TypedService))
+                        .Select(s => (TypedService)s))
+                    .Any(ts => ts.ServiceType == typeof(TService));
+
+                if (isServiceRegistered)
+                {
+                    return scope.Resolve<TService>();
+                }
+            }
+
+            return default(TService);
         }
 
         /// <summary>
