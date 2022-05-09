@@ -202,7 +202,7 @@ namespace Autofac.Extras.FakeItEasy.Test
                 fake.Provide(new Baz());
                 var bar2 = fake.Resolve<IBar>();
 
-                Assert.Equal(bar, bar2);
+                Assert.Same(bar, bar2);
             }
         }
 
