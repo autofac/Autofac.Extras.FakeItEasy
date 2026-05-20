@@ -43,6 +43,7 @@
     <Rule Id="SA1615" Action="None" />
     <Rule Id="SA1618" Action="None" />
     <Rule Id="SA1625" Action="None" />
+    <Rule Id="SA1633" Action="None" />
     <Rule Id="IDE0051" Action="None" />
     <Rule Id="IDE0052" Action="None" />
     <Rule Id="IDE0060" Action="None" />
