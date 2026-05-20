@@ -22,7 +22,7 @@
     <AssemblyTitle>Autofac.Extras.FakeItEasy</AssemblyTitle>
     <NeutralLanguage>en</NeutralLanguage>
     <Copyright>Copyright © 2014 Autofac Contributors</Copyright>
-    <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>../../build/Source.ruleset</CodeAnalysisRuleSet>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedAllSources>true</EmbedAllSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
