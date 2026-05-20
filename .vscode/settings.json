@@ -1,4 +1,3 @@
 {
-  "dotnet-test-explorer.runInParallel": true,
-  "dotnet-test-explorer.testProjectPath": "test/**/*.Test.csproj"
+  "omnisharp.enableEditorConfigSupport": true
 }
