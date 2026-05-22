@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <Description>Autofac extension supporting generation of FakeItEasy objects.</Description>
-    <!-- VersionPrefix patched by AppVeyor -->
-    <VersionPrefix>0.0.1</VersionPrefix>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
