@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>Autofac extension supporting generation of FakeItEasy objects.</Description>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -29,11 +28,12 @@
     <Company>Autofac</Company>
     <Product>Autofac</Product>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\..\build\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.0.0" />
     <PackageReference Include="FakeItEasy" Version="3.4.1" />

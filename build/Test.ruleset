@@ -58,8 +58,6 @@
     <Rule Id="SA1121" Action="None" />
     <!-- Use String.Empty instead of "". -->
     <Rule Id="SA1122" Action="None" />
-    <!-- Using directives should appear within namespace - conflicts with file-scoped namespaces and stylecop.json settings. -->
-    <Rule Id="SA1200" Action="None" />
     <!-- Enforce order of class members by member type - sometimes putting test classes/data by the test helps. -->
     <Rule Id="SA1201" Action="None" />
     <!-- Enforce order of class members by member visibility - sometimes putting test classes/data by the test helps. -->

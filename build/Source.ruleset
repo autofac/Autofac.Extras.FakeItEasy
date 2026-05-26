@@ -4,8 +4,6 @@
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
     <Rule Id="CA1032" Action="None" />
-    <!-- Implement IDisposable correctly - false positive with the dispose pattern implementation. -->
-    <Rule Id="CA1063" Action="None" />
     <!-- Avoid excessive inheritance (must be explicitly enabled). -->
     <Rule Id="CA1501" Action="Warning" />
     <!-- Avoid excessive complexity (must be explicitly enabled). -->
@@ -38,8 +36,6 @@
     <Rule Id="SA1121" Action="None" />
     <!-- Use String.Empty instead of "". -->
     <Rule Id="SA1122" Action="None" />
-    <!-- Using directives should appear within namespace - conflicts with file-scoped namespaces and stylecop.json settings. -->
-    <Rule Id="SA1200" Action="None" />
     <!-- Fields can't start with underscore. -->
     <Rule Id="SA1309" Action="None" />
   </Rules>
