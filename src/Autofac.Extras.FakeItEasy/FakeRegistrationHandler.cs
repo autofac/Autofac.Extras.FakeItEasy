@@ -14,7 +14,7 @@ using FakeItEasy.Sdk;
 namespace Autofac.Extras.FakeItEasy;
 
 /// <summary> Resolves unknown interfaces and Fakes. </summary>
-internal class FakeRegistrationHandler : IRegistrationSource
+internal sealed class FakeRegistrationHandler : IRegistrationSource
 {
     private readonly bool _strict;
     private readonly bool _callsBaseMethods;
