@@ -261,7 +261,7 @@ public class AutoFakeFixture
     }
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class ForTestAttribute : Attribute
+    public sealed class ForTestAttribute : Attribute
     {
     }
 }
