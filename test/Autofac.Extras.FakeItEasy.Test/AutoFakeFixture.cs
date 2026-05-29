@@ -57,8 +57,8 @@ public class AutoFakeFixture
         {
             var foo = fake.Resolve<Foo>();
 
-            // Should not throw.
-            foo.Go();
+            var exception = Record.Exception(() => foo.Go());
+            Assert.Null(exception);
         }
     }
 
@@ -101,7 +101,8 @@ public class AutoFakeFixture
         using (var fake = new AutoFake(callsBaseMethods: true))
         {
             var bar = fake.Resolve<Bar>();
-            bar.GoAbstractly();
+            var exception = Record.Exception(() => bar.GoAbstractly());
+            Assert.Null(exception);
         }
     }
 
@@ -192,7 +193,8 @@ public class AutoFakeFixture
             configureFake: f => A.CallTo(() => ((Bar)f).Go()).DoesNothing()))
         {
             var bar = fake.Resolve<Bar>();
-            bar.Go();
+            var exception = Record.Exception(() => bar.Go());
+            Assert.Null(exception);
         }
     }
 
@@ -259,7 +261,7 @@ public class AutoFakeFixture
     }
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class ForTestAttribute : Attribute
+    public sealed class ForTestAttribute : Attribute
     {
     }
 }
