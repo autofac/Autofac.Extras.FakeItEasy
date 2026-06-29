@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using Autofac.Core;
@@ -39,17 +37,17 @@ public class AutoFake : IDisposable
     public AutoFake(
         bool strict = false,
         bool callsBaseMethods = false,
-        Action<object> configureFake = null,
-        ContainerBuilder builder = null,
-        Action<ContainerBuilder> configureAction = null)
+        Action<object>? configureFake = null,
+        ContainerBuilder? builder = null,
+        Action<ContainerBuilder>? configureAction = null)
     {
         builder ??= new ContainerBuilder();
 
         builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
         builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, configureFake));
         configureAction?.Invoke(builder);
-        this.Container = builder.Build();
-        this._currentScope = this.Container.BeginLifetimeScope();
+        Container = builder.Build();
+        _currentScope = Container.BeginLifetimeScope();
     }
 
     /// <summary>
@@ -59,7 +57,7 @@ public class AutoFake : IDisposable
     [SuppressMessage("CA1063", "CA1063", Justification = "False positive - the message wants us to call Dispose(false) and we already do that.")]
     ~AutoFake()
     {
-        this.Dispose(false);
+        Dispose(false);
     }
 
     /// <summary>
@@ -77,7 +75,7 @@ public class AutoFake : IDisposable
     [SuppressMessage("CA1063", "CA1063", Justification = "False positive - the message wants us to call Dispose(true) / SuppressFinalize and we already do that.")]
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -87,7 +85,9 @@ public class AutoFake : IDisposable
     /// <typeparam name="T">The type of the service.</typeparam>
     /// <param name="parameters">Optional parameters.</param>
     /// <returns>The service.</returns>
-    public T Resolve<T>(params Parameter[] parameters) => this._currentScope.Resolve<T>(parameters);
+    public T Resolve<T>(params Parameter[] parameters)
+        where T : notnull
+            => _currentScope.Resolve<T>(parameters);
 
     /// <summary>
     /// Resolve the specified type in the container (register it if needed).
@@ -96,7 +96,9 @@ public class AutoFake : IDisposable
     /// <param name="parameters">Optional parameters.</param>
     /// <returns>The service.</returns>
     [Obsolete("Use Resolve<T>() instead")]
-    public T Create<T>(params Parameter[] parameters) => this.Resolve<T>(parameters);
+    public T Create<T>(params Parameter[] parameters)
+        where T : notnull
+            => Resolve<T>(parameters);
 
     /// <summary>
     /// Resolve the specified type in the container (register it if needed).
@@ -107,16 +109,18 @@ public class AutoFake : IDisposable
     /// <returns>The service.</returns>
     [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
     public TService Provide<TService, TImplementation>(params Parameter[] parameters)
+        where TImplementation : notnull
+        where TService : notnull
     {
-        var scope = this._currentScope.BeginLifetimeScope(b =>
+        var scope = _currentScope.BeginLifetimeScope(b =>
         {
             b.RegisterType<TImplementation>().As<TService>().InstancePerLifetimeScope();
         });
 
-        this._scopes.Push(scope);
-        this._currentScope = scope;
+        _scopes.Push(scope);
+        _currentScope = scope;
 
-        return this._currentScope.Resolve<TService>(parameters);
+        return _currentScope.Resolve<TService>(parameters);
     }
 
     /// <summary>
@@ -129,15 +133,15 @@ public class AutoFake : IDisposable
     public TService Provide<TService>(TService instance)
         where TService : class
     {
-        var scope = this._currentScope.BeginLifetimeScope(b =>
+        var scope = _currentScope.BeginLifetimeScope(b =>
         {
             b.Register(c => instance).InstancePerLifetimeScope();
         });
 
-        this._scopes.Push(scope);
-        this._currentScope = scope;
+        _scopes.Push(scope);
+        _currentScope = scope;
 
-        return this._currentScope.Resolve<TService>();
+        return _currentScope.Resolve<TService>();
     }
 
     /// <summary>
@@ -151,19 +155,19 @@ public class AutoFake : IDisposable
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
-                while (this._scopes.Count > 0)
+                while (_scopes.Count > 0)
                 {
-                    this._scopes.Pop().Dispose();
+                    _scopes.Pop().Dispose();
                 }
 
-                this.Container.Dispose();
+                Container.Dispose();
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
     }
 }

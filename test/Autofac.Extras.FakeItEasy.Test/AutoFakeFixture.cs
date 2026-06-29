@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using FakeItEasy;
-using Xunit;
 
 namespace Autofac.Extras.FakeItEasy.Test;
 
@@ -109,7 +107,7 @@ public class AutoFakeFixture
     [Fact]
     public void CanResolveFakesWhichInvokeActionsWhenResolved()
     {
-        var resolvedFake = (object)null;
+        object? resolvedFake = null!;
         using (var fake = new AutoFake(configureFake: obj => resolvedFake = obj))
         {
             var bar = fake.Resolve<IBar>();
@@ -206,13 +204,13 @@ public class AutoFakeFixture
         {
             get
             {
-                return this._gone;
+                return _gone;
             }
         }
 
         public virtual void Go()
         {
-            this._gone = true;
+            _gone = true;
         }
 
         public IBar Spawn()
@@ -231,13 +229,13 @@ public class AutoFakeFixture
         {
             get
             {
-                return this._gone;
+                return _gone;
             }
         }
 
         public virtual void Go()
         {
-            this._gone = true;
+            _gone = true;
         }
     }
 
@@ -249,14 +247,14 @@ public class AutoFakeFixture
 
         public Foo(IBar bar, IBaz baz)
         {
-            this._bar = bar;
-            this._baz = baz;
+            _bar = bar;
+            _baz = baz;
         }
 
         public virtual void Go()
         {
-            this._bar.Go();
-            this._baz.Go();
+            _bar.Go();
+            _baz.Go();
         }
     }
 

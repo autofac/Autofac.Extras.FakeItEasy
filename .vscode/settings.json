@@ -1,3 +1,35 @@
 {
-  "omnisharp.enableEditorConfigSupport": true
+  "cSpell.words": [
+    "autofac",
+    "diagnoser",
+    "netstandard",
+    "startable",
+    "xunit"
+  ],
+  "coverage-gutters.coverageBaseDir": "artifacts/logs",
+  "coverage-gutters.coverageFileNames": [
+    "**/coverage.cobertura.xml"
+  ],
+  "dotnet.defaultSolution": "Autofac.Extras.FakeItEasy.sln",
+  "dotnet.unitTestDebuggingOptions": {
+    "enableStepFiltering": false,
+    "justMyCode": false,
+    "requireExactSource": false,
+    "sourceLinkOptions": {
+      "*": {
+        "enabled": true
+      }
+    },
+    "suppressJITOptimizations": true,
+    "symbolOptions": {
+      "searchNuGetOrgSymbolServer": true
+    }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.resx": "$(capture).*.resx, $(capture).designer.cs, $(capture).designer.vb"
+  },
+  "files.watcherExclude": {
+    "**/target": true
+  }
 }

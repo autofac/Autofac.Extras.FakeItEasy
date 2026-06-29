@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -18,7 +15,7 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
 {
     private readonly bool _strict;
     private readonly bool _callsBaseMethods;
-    private readonly Action<object> _configureFake;
+    private readonly Action<object>? _configureFake;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FakeRegistrationHandler" /> class.
@@ -26,11 +23,11 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
     /// <param name="strict">Whether fakes should be created with strict semantics.</param>
     /// <param name="callsBaseMethods">Whether fakes should call base methods.</param>
     /// <param name="configureFake">An action to perform on a fake before it's created.</param>
-    public FakeRegistrationHandler(bool strict, bool callsBaseMethods, Action<object> configureFake)
+    public FakeRegistrationHandler(bool strict, bool callsBaseMethods, Action<object>? configureFake)
     {
-        this._strict = strict;
-        this._callsBaseMethods = callsBaseMethods;
-        this._configureFake = configureFake;
+        _strict = strict;
+        _callsBaseMethods = callsBaseMethods;
+        _configureFake = configureFake;
     }
 
     /// <summary>
@@ -61,10 +58,10 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
             typedService.ServiceType.IsArray ||
             typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
         {
-            return Enumerable.Empty<IComponentRegistration>();
+            return [];
         }
 
-        var rb = RegistrationBuilder.ForDelegate((c, p) => this.CreateFake(typedService))
+        var rb = RegistrationBuilder.ForDelegate((c, p) => CreateFake(typedService))
             .As(service)
             .InstancePerLifetimeScope();
 
@@ -76,21 +73,21 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
     /// </summary>
     /// <param name="typedService">The typed service.</param>
     /// <returns>A fake object.</returns>
-    private object CreateFake(TypedService typedService) => Create.Fake(typedService.ServiceType, this.ApplyOptions);
+    private object CreateFake(TypedService typedService) => Create.Fake(typedService.ServiceType, ApplyOptions);
 
     private void ApplyOptions(IFakeOptions options)
     {
-        if (this._strict)
+        if (_strict)
         {
             options = options.Strict();
         }
 
-        if (this._configureFake != null)
+        if (_configureFake != null)
         {
-            options = options.ConfigureFake(x => this._configureFake(x));
+            options = options.ConfigureFake(x => _configureFake(x));
         }
 
-        if (this._callsBaseMethods)
+        if (_callsBaseMethods)
         {
             options.CallsBaseMethods();
         }
