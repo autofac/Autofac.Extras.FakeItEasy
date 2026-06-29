@@ -92,17 +92,6 @@ public class AutoFake : IDisposable
     /// <summary>
     /// Resolve the specified type in the container (register it if needed).
     /// </summary>
-    /// <typeparam name="T">The type of the service.</typeparam>
-    /// <param name="parameters">Optional parameters.</param>
-    /// <returns>The service.</returns>
-    [Obsolete("Use Resolve<T>() instead")]
-    public T Create<T>(params Parameter[] parameters)
-        where T : notnull
-            => Resolve<T>(parameters);
-
-    /// <summary>
-    /// Resolve the specified type in the container (register it if needed).
-    /// </summary>
     /// <typeparam name="TService">The type of the service.</typeparam>
     /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
     /// <param name="parameters">Optional parameters.</param>
