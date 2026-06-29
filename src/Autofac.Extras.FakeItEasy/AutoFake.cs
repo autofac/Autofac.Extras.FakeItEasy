@@ -22,17 +22,24 @@ public class AutoFake : IDisposable
     /// Initializes a new instance of the <see cref="AutoFake" /> class.
     /// </summary>
     /// <param name="strict">
-    /// <see langword="true" /> to create strict fakes.
-    /// This means that any calls to the fakes that have not been explicitly configured will throw an exception.
+    /// <see langword="true" /> to create strict fakes. This means that any
+    /// calls to the fakes that have not been explicitly configured will throw
+    /// an exception.
     /// </param>
     /// <param name="callsBaseMethods">
-    /// <see langword="true" /> to delegate configured method calls to the base method of the faked method.
+    /// <see langword="true" /> to delegate configured method calls to the base
+    /// method of the faked method.
     /// </param>
-    /// <param name="configureFake">Specifies an action that should be run over a fake object before it's created.</param>
+    /// <param name="configureFake">
+    /// Specifies an action that should be run over a fake object before it's
+    /// created.
+    /// </param>
     /// <param name="configureAction">
-    /// Specifies actions that need to be performed on the container builder, like registering additional services.
-    /// Use this to provide specific dependency instances or implementations to the system under test (for example,
-    /// <c>configureAction: b =&gt; b.RegisterInstance(myDependency).As&lt;IDependency&gt;()</c>).
+    /// Specifies actions that need to be performed on the container builder,
+    /// like registering additional services. Use this to provide specific
+    /// dependency instances or implementations to the system under test (for
+    /// example, <c>configureAction: b =&gt;
+    /// b.RegisterInstance(myDependency).As&lt;IDependency&gt;()</c>).
     /// </param>
     public AutoFake(
         bool strict = false,
@@ -92,10 +99,10 @@ public class AutoFake : IDisposable
     /// Handles disposal of managed and unmanaged resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to dispose of managed resources (during a manual execution
-    /// of <see cref="AutoFake.Dispose()"/>); or
-    /// <see langword="false" /> if this is getting run as part of finalization where
-    /// managed resources may have already been cleaned up.
+    /// <see langword="true" /> to dispose of managed resources (during a manual
+    /// execution of <see cref="AutoFake.Dispose()"/>); or
+    /// <see langword="false" /> if this is getting run as part of finalization
+    /// where managed resources may have already been cleaned up.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {

@@ -4,13 +4,17 @@
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.Metadata;
+using Autofac.Features.OwnedInstances;
 using FakeItEasy;
 using FakeItEasy.Creation;
 using FakeItEasy.Sdk;
 
 namespace Autofac.Extras.FakeItEasy;
 
-/// <summary> Resolves unknown interfaces and Fakes. </summary>
+/// <summary>
+/// Resolves unknown interfaces and fakes.
+/// </summary>
 internal sealed class FakeRegistrationHandler : IRegistrationSource
 {
     private readonly bool _strict;
@@ -31,8 +35,10 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
     }
 
     /// <summary>
-    /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-    /// of other components (I.e. like Meta, Func or Owned.)
+    /// Gets a value indicating whether the registrations provided by this
+    /// source are 1:1 adapters on top of other components (i.e.,
+    /// <see cref="Meta{T}"/>, <see cref="Func{T}"/>, or
+    /// <see cref="Owned{T}"/>.)
     /// </summary>
     public bool IsAdapterForIndividualComponents => false;
 
@@ -40,9 +46,15 @@ internal sealed class FakeRegistrationHandler : IRegistrationSource
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
     /// </summary>
-    /// <param name="service">The service that was requested.</param>
-    /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
-    /// <returns>Registrations providing the service.</returns>
+    /// <param name="service">
+    /// The service that was requested.
+    /// </param>
+    /// <param name="registrationAccessor">
+    /// A function that will return existing registrations for a service.
+    /// </param>
+    /// <returns>
+    /// Registrations providing the service.
+    /// </returns>
     public IEnumerable<IComponentRegistration> RegistrationsFor(
         Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
