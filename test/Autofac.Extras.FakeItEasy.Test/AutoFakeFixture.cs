@@ -7,23 +7,6 @@ namespace Autofac.Extras.FakeItEasy.Test;
 
 public class AutoFakeFixture
 {
-    public interface IBar
-    {
-        bool Gone
-        {
-            get;
-        }
-
-        void Go();
-
-        IBar Spawn();
-    }
-
-    public interface IBaz
-    {
-        void Go();
-    }
-
     [Fact]
     public void ByDefaultAbstractTypesAreResolvedToTheSameSharedInstance()
     {
@@ -128,9 +111,9 @@ public class AutoFakeFixture
     [Fact]
     public void ProvidesImplementations()
     {
-        using (var fake = new AutoFake())
+        using (var fake = new AutoFake(configureAction: b => b.RegisterType<Baz>().As<IBaz>()))
         {
-            var baz = fake.Provide<IBaz, Baz>();
+            var baz = fake.Resolve<IBaz>();
 
             Assert.NotNull(baz);
             Assert.True(baz is Baz);
@@ -140,11 +123,9 @@ public class AutoFakeFixture
     [Fact]
     public void ProvidesInstances()
     {
-        using (var fake = new AutoFake())
+        var bar = A.Fake<IBar>();
+        using (var fake = new AutoFake(configureAction: b => b.RegisterInstance(bar).As<IBar>()))
         {
-            var bar = A.Fake<IBar>();
-            fake.Provide(bar);
-
             var foo = fake.Resolve<Foo>();
             foo.Go();
 
@@ -153,12 +134,31 @@ public class AutoFakeFixture
     }
 
     [Fact]
+    public void ProvidedInstanceIsTheSameInstanceResolvedAfterConfiguration()
+    {
+        // Regression test for #19 and #22: a dependency configured at build
+        // time must be the exact instance injected into the system under test,
+        // with no extra lifetime scope.
+        var bar = A.Fake<IBar>();
+        using (var fake = new AutoFake(configureAction: b => b.RegisterInstance(bar).As<IBar>()))
+        {
+            A.CallTo(() => bar.Gone).Returns(true);
+
+            var resolved = fake.Resolve<IBar>();
+
+            Assert.Same(bar, resolved);
+            Assert.True(resolved.Gone);
+        }
+    }
+
+    [Fact]
     public void CallsBaseMethodsOverridesStrict()
     {
-        // A characterization test, intended to detect accidental changes in behavior.
-        // This is an odd situation, since specifying both strict and callsBaseMethods only makes
-        // sense when there are concrete methods on the fake that we want to be executed, but we
-        // want to reject the invocation of any methods that are left abstract on the faked type.
+        // A characterization test, intended to detect accidental changes in
+        // behavior. This is an odd situation, since specifying both strict and
+        // callsBaseMethods only makes sense when there are concrete methods on
+        // the fake that we want to be executed, but we want to reject the
+        // invocation of any methods that are left abstract on the faked type.
         using (var fake = new AutoFake(callsBaseMethods: true, strict: true))
         {
             var bar = fake.Resolve<Bar>();
@@ -170,9 +170,10 @@ public class AutoFakeFixture
     [Fact]
     public void CallsBaseMethodsOverridesConfigureFake()
     {
-        // A characterization test, intended to detect accidental changes in behavior.
-        // Since callsBaseMethods applies globally and configureFake can affect individual
-        // members, having configureFake override callsBaseMethods may be preferred.
+        // A characterization test, intended to detect accidental changes in
+        // behavior. Since callsBaseMethods applies globally and configureFake
+        // can affect individual members, having configureFake override
+        // callsBaseMethods may be preferred.
         using (var fake = new AutoFake(
             callsBaseMethods: true,
             configureFake: f => A.CallTo(() => ((Bar)f).Go()).DoesNothing()))
@@ -194,6 +195,23 @@ public class AutoFakeFixture
             var exception = Record.Exception(() => bar.Go());
             Assert.Null(exception);
         }
+    }
+
+    public interface IBar
+    {
+        bool Gone
+        {
+            get;
+        }
+
+        void Go();
+
+        IBar Spawn();
+    }
+
+    public interface IBaz
+    {
+        void Go();
     }
 
     public abstract class Bar : IBar

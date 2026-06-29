@@ -14,12 +14,9 @@ namespace Autofac.Extras.FakeItEasy;
 [SecurityCritical]
 public class AutoFake : IDisposable
 {
-    private readonly Stack<ILifetimeScope> _scopes = new Stack<ILifetimeScope>();
+    private readonly ILifetimeScope _scope;
 
     private bool _disposed;
-
-    [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "It's only a reference, dispose is called from the _scopes Stack")]
-    private ILifetimeScope _currentScope;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AutoFake" /> class.
@@ -31,23 +28,25 @@ public class AutoFake : IDisposable
     /// <param name="callsBaseMethods">
     /// <see langword="true" /> to delegate configured method calls to the base method of the faked method.
     /// </param>
-    /// <param name="builder">The container builder to use to build the container.</param>
     /// <param name="configureFake">Specifies an action that should be run over a fake object before it's created.</param>
-    /// <param name="configureAction">Specifies actions that needs to be performed on the container builder, like registering additional services.</param>
+    /// <param name="configureAction">
+    /// Specifies actions that need to be performed on the container builder, like registering additional services.
+    /// Use this to provide specific dependency instances or implementations to the system under test (for example,
+    /// <c>configureAction: b =&gt; b.RegisterInstance(myDependency).As&lt;IDependency&gt;()</c>).
+    /// </param>
     public AutoFake(
         bool strict = false,
         bool callsBaseMethods = false,
         Action<object>? configureFake = null,
-        ContainerBuilder? builder = null,
         Action<ContainerBuilder>? configureAction = null)
     {
-        builder ??= new ContainerBuilder();
+        var builder = new ContainerBuilder();
 
         builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
         builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, configureFake));
         configureAction?.Invoke(builder);
         Container = builder.Build();
-        _currentScope = Container.BeginLifetimeScope();
+        _scope = Container.BeginLifetimeScope();
     }
 
     /// <summary>
@@ -87,51 +86,7 @@ public class AutoFake : IDisposable
     /// <returns>The service.</returns>
     public T Resolve<T>(params Parameter[] parameters)
         where T : notnull
-            => _currentScope.Resolve<T>(parameters);
-
-    /// <summary>
-    /// Resolve the specified type in the container (register it if needed).
-    /// </summary>
-    /// <typeparam name="TService">The type of the service.</typeparam>
-    /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
-    /// <param name="parameters">Optional parameters.</param>
-    /// <returns>The service.</returns>
-    [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
-    public TService Provide<TService, TImplementation>(params Parameter[] parameters)
-        where TImplementation : notnull
-        where TService : notnull
-    {
-        var scope = _currentScope.BeginLifetimeScope(b =>
-        {
-            b.RegisterType<TImplementation>().As<TService>().InstancePerLifetimeScope();
-        });
-
-        _scopes.Push(scope);
-        _currentScope = scope;
-
-        return _currentScope.Resolve<TService>(parameters);
-    }
-
-    /// <summary>
-    /// Resolve the specified type in the container (register specified instance if needed).
-    /// </summary>
-    /// <typeparam name="TService">The type of the service.</typeparam>
-    /// <param name="instance">The instance to register if needed.</param>
-    /// <returns>The instance resolved from container.</returns>
-    [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
-    public TService Provide<TService>(TService instance)
-        where TService : class
-    {
-        var scope = _currentScope.BeginLifetimeScope(b =>
-        {
-            b.Register(c => instance).InstancePerLifetimeScope();
-        });
-
-        _scopes.Push(scope);
-        _currentScope = scope;
-
-        return _currentScope.Resolve<TService>();
-    }
+            => _scope.Resolve<T>(parameters);
 
     /// <summary>
     /// Handles disposal of managed and unmanaged resources.
@@ -148,11 +103,7 @@ public class AutoFake : IDisposable
         {
             if (disposing)
             {
-                while (_scopes.Count > 0)
-                {
-                    _scopes.Pop().Dispose();
-                }
-
+                _scope.Dispose();
                 Container.Dispose();
             }
 
